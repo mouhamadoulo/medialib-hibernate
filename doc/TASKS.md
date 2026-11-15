@@ -140,15 +140,19 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | Niveaux d'isolation | `IsolationTest` |
-| [ ] | `@Version` | `VersionTest` |
-| [ ] | `OptimisticLockException` | `VersionTest` |
-| [ ] | `OPTIMISTIC_FORCE_INCREMENT` | `VersionTest` |
-| [ ] | `PESSIMISTIC_WRITE` et `for update` | `PessimisticTest` |
-| [ ] | `NOWAIT` | `PessimisticTest` |
-| [ ] | `SKIP LOCKED` | `PessimisticTest` |
-| [ ] | **Emprunt concurrent à deux threads** | `EmpruntConcurrentTest` |
-| [ ] | Interblocage et ordre d'acquisition | `InterblocageTest` |
+| [x] | Niveaux d'isolation | `IsolationTest` |
+| [x] | `@Version` | `VersionTest` |
+| [x] | `OptimisticLockException` | `VersionTest` |
+| [x] | `OPTIMISTIC_FORCE_INCREMENT` | `VersionTest` |
+| [x] | `PESSIMISTIC_WRITE` et `for update` | `PessimisticTest` |
+| [x] | `NOWAIT` | `PessimisticTest` |
+| [x] | `SKIP LOCKED` | `PessimisticTest` |
+| [x] | **Emprunt concurrent à deux threads** | `EmpruntConcurrentTest` |
+| [x] | Interblocage et ordre d'acquisition | `InterblocageTest` |
+| [x] | `PESSIMISTIC_WRITE` sur PostgreSQL : `for no key update` | `PessimisticTest` |
+| [x] | Le cache L1 masque la lecture non repetable | `IsolationTest` |
+| [x] | Aucune lecture sale possible | `IsolationTest` |
+| [x] | Variante pessimiste de l'emprunt concurrent | `EmpruntConcurrentTest` |
 
 ## 09-caching — Les caches
 

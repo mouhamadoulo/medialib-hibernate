@@ -25,6 +25,7 @@
         <module>05-inheritance</module>
         <module>06-queries</module>
         <module>07-fetching</module>
+        <module>08-transactions-concurrency</module>
     </modules>
 
     <properties>
