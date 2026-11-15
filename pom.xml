@@ -28,6 +28,7 @@
         <module>08-transactions-concurrency</module>
         <module>09-caching</module>
         <module>10-advanced</module>
+        <module>11-performance</module>
     </modules>
 
     <properties>

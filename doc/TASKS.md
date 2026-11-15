@@ -196,17 +196,25 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | Sans `batch_size` : un aller-retour par insertion | `BatchingTest` |
-| [ ] | `hibernate.jdbc.batch_size` | `BatchingTest` |
-| [ ] | `IDENTITY` désactive le batching | `BatchingTest` |
-| [ ] | `order_inserts` | `BatchingTest` |
-| [ ] | `StatelessSession` | `StatelessSessionTest` |
-| [ ] | `update`/`delete` en masse HQL | `BulkTest` |
-| [ ] | Contexte périmé après un bulk | `BulkTest` |
-| [ ] | `stream` sur gros volume | `StreamTest` |
-| [ ] | Flyway : migrations versionnées | `FlywayTest` |
-| [ ] | `hbm2ddl.auto=validate` | `FlywayTest` |
-| [ ] | 100 000 insertions (`@Tag("slow")`) | `GrosVolumeTest` |
+| [x] | Sans `batch_size` : un aller-retour par insertion | `SansBatchTest` |
+| [x] | `hibernate.jdbc.batch_size` | `BatchingTest` |
+| [x] | `IDENTITY` désactive le batching | `BatchingTest` |
+| [x] | `order_inserts` | `BatchingTest` |
+| [x] | `StatelessSession` | `StatelessEtBulkTest` |
+| [x] | `update`/`delete` en masse HQL | `StatelessEtBulkTest` |
+| [x] | Contexte périmé après un bulk | `StatelessEtBulkTest` |
+| [x] | `stream` sur gros volume | `StatelessEtBulkTest` |
+| [x] | Flyway : migrations versionnées | `FlywayTest` |
+| [x] | `hbm2ddl.auto=validate` | `FlywayTest` |
+| [x] | 100 000 insertions (`@Tag("slow")`) | `GrosVolumeTest` |
+| [x] | `allocationSize` economise les appels a la sequence | `BatchingTest` |
+| [x] | Le batching des UPDATE aussi | `BatchingTest` |
+| [x] | **`StatelessSession` n'emet AUCUN lot** (facteur 17) | `GrosVolumeTest` |
+| [x] | `StatelessSession` en lecture streamee : son vrai usage | `GrosVolumeTest` |
+| [x] | Flyway journalise aussi la creation du schema | `FlywayTest` |
+| [x] | Index cree par migration, absent du mapping | `FlywayTest` |
+| [x] | Rejouer Flyway est sans effet | `FlywayTest` |
+| [x] | `datasource-proxy` au lieu du `StatementInspector` : pourquoi | `CompteurDExecutions` |
 
 ## 12-spring-boot — Ce que Spring ajoute et cache
 
