@@ -74,12 +74,15 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | Bag vs list indexée (`@OrderColumn`) | `BagVsListTest` |
-| [ ] | `@OrderBy` vs `SortedSet` | `OrderByTest` |
-| [ ] | `MultipleBagFetchException` | `MultipleBagFetchTest` |
-| [ ] | `@ElementCollection` | `ElementCollectionTest` |
-| [ ] | `@MapKeyColumn` | `MapTest` |
-| [ ] | `@BatchSize` sur collection | `BatchSizeTest` |
+| [x] | Bag vs list indexée (`@OrderColumn`) | `BagVsListTest` |
+| [x] | `@OrderBy` vs `SortedSet` | `TriEtMapTest` |
+| [x] | `MultipleBagFetchException` | `MultipleBagFetchTest` |
+| [x] | `@ElementCollection` | `TriEtMapTest` |
+| [x] | `@MapKeyColumn` | `TriEtMapTest` |
+| [x] | `@BatchSize` sur collection | `BatchSizeTest` |
+| [x] | L'ordre preserve par la colonne de position | `BagVsListTest` |
+| [x] | Hibernate 6+ dedoublonne le `join fetch` : `distinct` devenu inutile | `MultipleBagFetchTest` |
+| [x] | `@BatchSize` sur PostgreSQL : `= any (?)` et non `in (?, ?, ...)` | `BatchSizeTest` |
 
 ## 05-inheritance — Héritage
 
