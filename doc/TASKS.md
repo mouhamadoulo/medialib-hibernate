@@ -22,18 +22,18 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | `SessionFactory` par `StandardServiceRegistryBuilder` | `BootstrapTest` |
-| [ ] | Bootstrap par `persistence.xml` / `EntityManagerFactory` | `BootstrapTest` |
-| [ ] | `Session` vs `EntityManager` | `BootstrapTest` |
-| [ ] | État *transient* | `CycleDeVieTest` |
-| [ ] | `persist` et différé jusqu'au flush | `CycleDeVieTest` |
-| [ ] | `find` et contexte de persistance | `CycleDeVieTest` |
-| [ ] | `getReference` et proxy | `CycleDeVieTest` |
-| [ ] | `remove` | `RemoveTest` |
-| [ ] | Dirty checking | `DirtyCheckingTest` |
-| [ ] | État *detached* | `DirtyCheckingTest` |
-| [ ] | `merge` | `DirtyCheckingTest` |
-| [ ] | `flush()` et `FlushMode` | `FlushModeTest` |
+| [x] | `SessionFactory` par `StandardServiceRegistryBuilder` | `BootstrapTest` |
+| [x] | Bootstrap par `persistence.xml` / `EntityManagerFactory` | `BootstrapTest` |
+| [x] | `Session` vs `EntityManager` | `BootstrapTest` |
+| [x] | État *transient* | `CycleDeVieTest` |
+| [x] | `persist` et différé jusqu'au flush | `CycleDeVieTest` |
+| [x] | `find` et contexte de persistance | `CycleDeVieTest` |
+| [x] | `getReference` et proxy | `CycleDeVieTest` |
+| [x] | `remove` | `RemoveTest` |
+| [x] | Dirty checking | `DirtyCheckingTest` |
+| [x] | État *detached* | `DirtyCheckingTest` |
+| [x] | `merge` | `DirtyCheckingTest` |
+| [x] | `flush()` et `FlushMode` | `FlushModeTest` |
 
 ## 02-mapping-basics — Mapper une entité
 

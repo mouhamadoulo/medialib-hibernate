@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Bootstrap « standard JPA » : on declare l'unite de persistance ici, et Hibernate la decouvre.
+
+  Les proprietes de connexion sont volontairement absentes : l'URL du conteneur PostgreSQL
+  n'est connue qu'au demarrage du test. Elles sont passees en surcharge a
+  Persistence.createEntityManagerFactory(nom, proprietes) — ce qui reste un bootstrap par
+  persistence.xml, avec les reglages d'environnement injectes.
+-->
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="medialib-bootstrap" transaction-type="RESOURCE_LOCAL">
+        <class>com.medialib.bootstrap.Member</class>
+        <class>com.medialib.bootstrap.Branch</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.show_sql" value="false"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>
