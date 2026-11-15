@@ -26,6 +26,7 @@
         <module>06-queries</module>
         <module>07-fetching</module>
         <module>08-transactions-concurrency</module>
+        <module>09-caching</module>
     </modules>
 
     <properties>

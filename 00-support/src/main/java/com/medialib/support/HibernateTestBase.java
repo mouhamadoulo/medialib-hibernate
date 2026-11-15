@@ -74,6 +74,7 @@ public abstract class HibernateTestBase {
     void repartDUneBasePropre() {
         demarreSiNecessaire();
         videLesTables();
+        videLeCacheDeSecondNiveau();
         counter.reset();
     }
 
@@ -172,6 +173,17 @@ public abstract class HibernateTestBase {
         if (!noms.contains(nom)) {
             noms.add(nom);
         }
+    }
+
+    /**
+     * Vider les tables ne suffit pas quand le cache de second niveau est actif : il
+     * continuerait a servir les lignes du test precedent, deja supprimees. Sans appel, le
+     * chapitre 09 verrait ses tests passer ou echouer selon leur ordre d'execution.
+     *
+     * <p>Sans cache configure, l'appel ne fait rien.
+     */
+    private void videLeCacheDeSecondNiveau() {
+        sessionFactory.getCache().evictAllRegions();
     }
 
     /**

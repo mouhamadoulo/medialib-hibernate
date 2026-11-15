@@ -158,16 +158,20 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | Cache L1 et identité d'instance | `CacheNiveau1Test` |
-| [ ] | Cache L1 non désactivable | `CacheNiveau1Test` |
-| [ ] | Cache L2 via JCache + Caffeine | `CacheNiveau2Test` |
-| [ ] | `Statistics` : hits et misses | `CacheNiveau2Test` |
-| [ ] | `READ_ONLY` | `StrategiesTest` |
-| [ ] | `READ_WRITE` | `StrategiesTest` |
-| [ ] | `TRANSACTIONAL` — limite documentée | `StrategiesTest` |
-| [ ] | Cache de collection | `CacheCollectionTest` |
-| [ ] | Cache de requêtes | `CacheRequeteTest` |
-| [ ] | Invalidation et `bulk update` | `InvalidationTest` |
+| [x] | Cache L1 et identité d'instance | `CacheNiveau1Test` |
+| [x] | Cache L1 non désactivable | `CacheNiveau1Test` |
+| [x] | Cache L2 via JCache + Caffeine | `CacheNiveau2Test` |
+| [x] | `Statistics` : hits et misses | `CacheNiveau2Test` |
+| [x] | `READ_ONLY` | `StrategiesEtInvalidationTest` |
+| [x] | `READ_WRITE` met le cache a jour au commit | `CacheNiveau2Test` |
+| [x] | `TRANSACTIONAL` — limite documentée | `StrategiesEtInvalidationTest` |
+| [x] | Cache de collection | `StrategiesEtInvalidationTest` |
+| [x] | Cache de requêtes | `CacheRequeteTest` |
+| [x] | Invalidation et `bulk update` | `StrategiesEtInvalidationTest` |
+| [x] | `session.clear()` vide le cache L1 | `CacheNiveau1Test` |
+| [x] | L'INSERT peuple deja le cache L2 | `CacheNiveau2Test` |
+| [x] | Un UPDATE natif invalide TOUTES les regions | `StrategiesEtInvalidationTest` |
+| [x] | Une requete non cachee est rejouee | `CacheRequeteTest` |
 
 ## 10-advanced — Fonctionnalités avancées
 
