@@ -10,7 +10,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>MediaLib — Projet fil rouge Hibernate</name>
+    <name>MediaLib - Projet fil rouge Hibernate</name>
     <description>
         Apprendre Hibernate par un domaine metier reel : un reseau de mediatheques.
         Chaque notion est prouvee par un test qui assertionne le SQL reellement emis.

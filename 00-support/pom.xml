@@ -13,7 +13,7 @@
 
     <artifactId>00-support</artifactId>
 
-    <name>00 — Socle de test</name>
+    <name>00 - Socle de test</name>
     <description>
         Outillage partage par les modules 01 a 11 : conteneur PostgreSQL, compteur SQL
         base sur StatementInspector, classe de base JUnit. Ne contient aucune entite.
