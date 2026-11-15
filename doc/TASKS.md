@@ -103,15 +103,20 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | HQL : jointures | `HqlTest` |
-| [ ] | HQL : sous-requête corrélée | `HqlTest` |
-| [ ] | Criteria et métamodèle statique | `CriteriaTest` |
-| [ ] | SQL natif et `@SqlResultSetMapping` | `NativeQueryTest` |
-| [ ] | `@NamedQuery` | `NamedQueryTest` |
-| [ ] | Projection par record | `ProjectionTest` |
-| [ ] | `Tuple` | `ProjectionTest` |
-| [ ] | Pagination | `PaginationTest` |
-| [ ] | Injection SQL et paramètres nommés | `InjectionSqlTest` |
+| [x] | HQL : jointures | `HqlTest` |
+| [x] | HQL : sous-requête corrélée | `HqlTest` |
+| [x] | Criteria et métamodèle statique | `CriteriaTest` |
+| [x] | SQL natif et `@SqlResultSetMapping` | `ProjectionsEtNativeTest` |
+| [x] | `@NamedQuery` | `ProjectionsEtNativeTest` |
+| [x] | Projection par record | `ProjectionsEtNativeTest` |
+| [x] | `Tuple` | `ProjectionsEtNativeTest` |
+| [x] | Pagination | `PaginationEtInjectionTest` |
+| [x] | Injection SQL et paramètres nommés | `PaginationEtInjectionTest` |
+| [x] | Agregat `group by` / `having` | `HqlTest` |
+| [x] | `left join` et `case when` | `HqlTest` |
+| [x] | Criteria compose des criteres optionnels | `CriteriaTest` |
+| [x] | Une projection n'est pas managee | `ProjectionsEtNativeTest` |
+| [x] | Pagination sans `order by` : resultat non deterministe | `PaginationEtInjectionTest` |
 
 ## 07-fetching — Le chargement
 
