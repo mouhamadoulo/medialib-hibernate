@@ -22,6 +22,7 @@
         <module>02-mapping-basics</module>
         <module>03-associations</module>
         <module>04-collections</module>
+        <module>05-inheritance</module>
     </modules>
 
     <properties>

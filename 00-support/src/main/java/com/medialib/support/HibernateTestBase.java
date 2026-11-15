@@ -113,8 +113,37 @@ public abstract class HibernateTestBase {
         }
         Metadata metadata = sources.buildMetadata();
 
-        tables = releveDesTables(metadata);
         sessionFactory = metadata.buildSessionFactory();
+        tables = tablesReellementCreees(releveDesTables(metadata));
+    }
+
+    /**
+     * Toutes les tables du mapping n'existent pas forcement en base.
+     *
+     * <p>Le cas qui le revele : en {@code TABLE_PER_CLASS}, la racine abstraite de la
+     * hierarchie est bien une table dans le mapping, mais Hibernate ne la cree jamais — chaque
+     * media vit dans la table de sa sous-classe, et c'est precisement pourquoi aucune cle
+     * etrangere ne peut designer un media dans cette strategie.
+     *
+     * <p>On confronte donc le mapping au schema reel avant de vider quoi que ce soit.
+     */
+    private List<String> tablesReellementCreees(List<String> duMapping) {
+        List<String> enBase = sessionFactory.fromTransaction(session -> session.createNativeQuery(
+                "select table_name from information_schema.tables "
+                        + "where table_schema = current_schema()", String.class)
+                .getResultList());
+
+        List<String> existantes = new ArrayList<>();
+        for (String nom : duMapping) {
+            String brut = nom.replace("\"", "");
+            boolean presente = nom.startsWith("\"")
+                    ? enBase.contains(brut)
+                    : enBase.stream().anyMatch(t -> t.equalsIgnoreCase(brut));
+            if (presente) {
+                existantes.add(nom);
+            }
+        }
+        return existantes;
     }
 
     /**

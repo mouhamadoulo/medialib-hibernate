@@ -88,13 +88,16 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | `SINGLE_TABLE` et discriminant | `SingleTableTest` |
-| [ ] | `SINGLE_TABLE` : colonnes forcément nullables | `SingleTableTest` |
-| [ ] | `JOINED` | `JoinedTest` |
-| [ ] | `TABLE_PER_CLASS` et `union all` | `TablePerClassTest` |
-| [ ] | Comparatif des trois stratégies | `ComparatifTest` |
-| [ ] | `@MappedSuperclass` | `MappedSuperclassTest` |
-| [ ] | Requête polymorphe et `type()` | `RequetePolymorpheTest` |
+| [x] | `SINGLE_TABLE` et discriminant | `StrategiesTest` |
+| [x] | `SINGLE_TABLE` : colonnes forcément nullables | `StrategiesTest` |
+| [x] | `JOINED` | `StrategiesTest` |
+| [x] | `TABLE_PER_CLASS` et `union all` | `ComparatifTest` |
+| [x] | Comparatif des trois stratégies | `ComparatifTest` |
+| [x] | `@MappedSuperclass` | `ComparatifTest` |
+| [x] | Requête polymorphe et `type()` | `ComparatifTest` |
+| [x] | `JOINED` autorise le NOT NULL que `SINGLE_TABLE` interdit | `StrategiesTest` |
+| [x] | `TABLE_PER_CLASS` ne cree aucune table pour la racine abstraite | `ComparatifTest` |
+| [x] | `@MappedSuperclass` recopie ses colonnes | `ComparatifTest` |
 
 ## 06-queries — Interroger
 
