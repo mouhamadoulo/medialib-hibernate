@@ -56,16 +56,19 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | `@ManyToOne` | `ManyToOneTest` |
-| [ ] | `@OneToMany` unidirectionnel | `OneToManyTest` |
-| [ ] | `@OneToMany` bidirectionnel et `mappedBy` | `OneToManyTest` |
-| [ ] | Synchronisation bidirectionnelle (piège) | `OneToManyTest` |
-| [ ] | `@OneToOne` et `@MapsId` | `OneToOneTest` |
-| [ ] | `@ManyToMany` | `ManyToManyTest` |
-| [ ] | Entité d'association | `ManyToManyTest` |
-| [ ] | `cascade` | `CascadeTest` |
-| [ ] | `orphanRemoval` | `OrphanRemovalTest` |
-| [ ] | `equals`/`hashCode` et le piège du `Set` | `EqualsHashCodeTest` |
+| [x] | `@ManyToOne` | `CardinalitesTest` |
+| [x] | `@OneToMany` unidirectionnel | `CardinalitesTest` |
+| [x] | `@OneToMany` bidirectionnel et `mappedBy` | `CardinalitesTest` |
+| [x] | Synchronisation bidirectionnelle (piège) | `CardinalitesTest` |
+| [x] | `@OneToOne` et `@MapsId` | `CardinalitesTest` |
+| [x] | `@ManyToMany` | `CardinalitesTest` |
+| [x] | Entité d'association | `CardinalitesTest` |
+| [x] | `cascade` | `CascadeTest` |
+| [x] | `orphanRemoval` | `CascadeTest` |
+| [x] | `equals`/`hashCode` et le piège du `Set` | `EqualsHashCodeTest` |
+| [x] | Sans `orphanRemoval`, l'enfant survit orphelin | `CascadeTest` |
+| [x] | Cle metier stable comme remede | `EqualsHashCodeTest` |
+| [x] | Supprimer une entite vide sa table de jonction `@ManyToMany` | `CascadeTest` |
 
 ## 04-collections — Collections et éléments de valeur
 
