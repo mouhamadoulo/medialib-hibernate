@@ -241,3 +241,21 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 - [ ] Chaque module a au moins un test assertant le SQL émis
 - [ ] Aucune assertion ne porte sur un temps d'exécution
 - [ ] `git log --format='%an <%ae>' | sort -u` rend exactement une ligne
+
+---
+
+## Etat au dernier commit
+
+**Modules 00 a 11 : complets et verts — 161 tests**, dont 17 sous `-Pslow`.
+
+**Module 12 (Spring Boot) : en cours.** Il compile, et `SpringDataTest` passe (6/6) :
+requete derivee, `@Query`, `Specification`, projection par interface, `@EntityGraph`, et
+`EntityManager` accessible sous les repositories. Restent rouges 10 tests sur 17 :
+
+- `OsivActifTest` et `OsivDesactiveTest` (4 erreurs) — il faut un `mvn clean` pour que le
+  flag `-parameters` du compilateur s'applique aux sources principales ;
+- `TransactionalTest` (5 erreurs) — a diagnostiquer ;
+- `DataJpaTestPiegeTest.le_rollback_automatique_masque_les_erreurs_de_flush` (1 echec).
+
+Reste aussi a ecrire la **table de correspondance** des onze chapitres dans le `README.md`,
+puis a passer la verification finale (`mvn clean verify` et `mvn clean verify -Pslow`).
