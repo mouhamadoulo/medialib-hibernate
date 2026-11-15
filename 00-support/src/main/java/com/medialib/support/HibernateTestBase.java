@@ -124,18 +124,25 @@ public abstract class HibernateTestBase {
     private static List<String> releveDesTables(Metadata metadata) {
         List<String> noms = new ArrayList<>();
         for (PersistentClass binding : metadata.getEntityBindings()) {
-            String nom = binding.getTable().getName();
-            if (!noms.contains(nom)) {
-                noms.add(nom);
-            }
+            ajoute(noms, binding.getTable());
         }
         for (Collection binding : metadata.getCollectionBindings()) {
-            String nom = binding.getCollectionTable().getName();
-            if (!noms.contains(nom)) {
-                noms.add(nom);
-            }
+            ajoute(noms, binding.getCollectionTable());
         }
         return noms;
+    }
+
+    /**
+     * Le nom n'est entoure de guillemets que si Hibernate l'a lui-meme marque comme tel.
+     * Guillemeter systematiquement rendrait PostgreSQL sensible a la casse : une table creee
+     * sans guillemets sous le nom {@code CatalogEntry} existe en base sous le nom
+     * {@code catalogentry}, et {@code truncate table "CatalogEntry"} ne la trouverait pas.
+     */
+    private static void ajoute(List<String> noms, org.hibernate.mapping.Table table) {
+        String nom = table.isQuoted() ? "\"" + table.getName() + "\"" : table.getName();
+        if (!noms.contains(nom)) {
+            noms.add(nom);
+        }
     }
 
     /**
@@ -147,7 +154,7 @@ public abstract class HibernateTestBase {
         if (tables.isEmpty()) {
             return;
         }
-        String liste = String.join(", ", tables.stream().map(t -> "\"" + t + "\"").toList());
+        String liste = String.join(", ", tables);
         sessionFactory.inTransaction(session ->
                 session.createNativeMutationQuery("truncate table " + liste + " restart identity cascade")
                         .executeUpdate());

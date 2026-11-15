@@ -39,15 +39,18 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | `IDENTITY` et son effet sur le batching | `IdentifiantsTest` |
-| [ ] | `SEQUENCE` | `IdentifiantsTest` |
-| [ ] | `UUID` | `IdentifiantsTest` |
-| [ ] | `@Embeddable` / `@Embedded` | `EmbeddableTest` |
-| [ ] | `@EmbeddedId` (clé composite) | `EmbeddedIdTest` |
-| [ ] | `AttributeConverter` (`Money`) | `ConverterTest` |
-| [ ] | `UserType` (`Isbn`) | `UserTypeTest` |
-| [ ] | `@Enumerated` et le piège `ORDINAL` | `EnumTest` |
-| [ ] | `@Formula` | `FormulaTest` |
+| [x] | `IDENTITY` : INSERT immediat, aucun report possible | `IdentifiantsTest` |
+| [x] | `SEQUENCE` : INSERT differes au flush | `IdentifiantsTest` |
+| [x] | `UUID` | `IdentifiantsTest` |
+| [x] | `@Embeddable` / `@Embedded` | `TypesValeurTest` |
+| [x] | `@EmbeddedId` (clé composite) | `TypesValeurTest` |
+| [x] | `AttributeConverter` (`Money`) | `TypesValeurTest` |
+| [x] | `UserType` (`Isbn`) | `TypesValeurTest` |
+| [x] | `@Enumerated` et le piège `ORDINAL` | `EnumEtFormulaTest` |
+| [x] | `@Formula` | `EnumEtFormulaTest` |
+| [x] | `@Transient` | `EnumEtFormulaTest` |
+| [x] | Strategie de nommage : le defaut d'Hibernate n'est PAS snake_case | `NommageTest` |
+| [x] | `CamelCaseToUnderscoresNamingStrategy` | `NommageSnakeCaseTest` |
 
 ## 03-associations — Relier les entités
 

@@ -19,6 +19,7 @@
     <modules>
         <module>00-support</module>
         <module>01-bootstrap</module>
+        <module>02-mapping-basics</module>
     </modules>
 
     <properties>
