@@ -122,16 +122,19 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | `LAZY` / `EAGER` par défaut | `LazyEagerTest` |
-| [ ] | Proxies Hibernate | `ProxyTest` |
-| [ ] | `LazyInitializationException` | `LazyInitializationTest` |
-| [ ] | `Hibernate.initialize()` | `LazyInitializationTest` |
-| [ ] | **N+1 reproduit et chiffré** | `NPlusUnTest` |
-| [ ] | `join fetch` | `NPlusUnTest` |
-| [ ] | `@EntityGraph` | `NPlusUnTest` |
-| [ ] | `@BatchSize` | `NPlusUnTest` |
-| [ ] | Projection DTO | `NPlusUnTest` |
-| [ ] | Pagination + `join fetch` (`HHH90003004`) | `PaginationFetchTest` |
+| [x] | `LAZY` / `EAGER` par défaut | `LazyEagerTest` |
+| [x] | Proxies Hibernate | `LazyEagerTest` |
+| [x] | `LazyInitializationException` | `LazyEagerTest` |
+| [x] | `Hibernate.initialize()` | `LazyEagerTest` |
+| [x] | **N+1 reproduit et chiffré** | `NPlusUnTest` |
+| [x] | `join fetch` | `NPlusUnTest` |
+| [x] | `@EntityGraph` | `NPlusUnTest` |
+| [x] | `@BatchSize` | `NPlusUnTest` |
+| [x] | Projection DTO | `NPlusUnTest` |
+| [x] | Pagination + `join fetch` (`HHH90003004`) | `PaginationFetchTest` |
+| [x] | **EAGER ne veut pas dire joint** : en HQL, requete separee | `LazyEagerTest` |
+| [x] | Une projection ne peut pas lever `LazyInitializationException` | `LazyEagerTest` |
+| [x] | Paginer les identifiants puis charger : la bonne solution | `PaginationFetchTest` |
 
 ## 08-transactions-concurrency — Transactions et concurrence
 

@@ -24,6 +24,7 @@
         <module>04-collections</module>
         <module>05-inheritance</module>
         <module>06-queries</module>
+        <module>07-fetching</module>
     </modules>
 
     <properties>
