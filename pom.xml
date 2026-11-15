@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.medialib</groupId>
+    <artifactId>medialib-hibernate</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>MediaLib — Projet fil rouge Hibernate</name>
+    <description>
+        Apprendre Hibernate par un domaine metier reel : un reseau de mediatheques.
+        Chaque notion est prouvee par un test qui assertionne le SQL reellement emis.
+    </description>
+
+    <modules>
+        <module>00-support</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Versions figees : voir docs/superpowers/specs, section 7. -->
+        <hibernate.version>7.4.16.Final</hibernate.version>
+        <postgresql.version>42.7.14</postgresql.version>
+        <testcontainers.version>1.21.4</testcontainers.version>
+        <junit.version>6.1.3</junit.version>
+        <assertj.version>3.27.7</assertj.version>
+        <caffeine.version>3.3.1</caffeine.version>
+        <flyway.version>13.12.2</flyway.version>
+        <hikaricp.version>7.1.0</hikaricp.version>
+        <datasource-proxy.version>1.11.1</datasource-proxy.version>
+        <logback.version>1.6.7</logback.version>
+        <spring-boot.version>4.1.2</spring-boot.version>
+
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.6.1</maven-surefire-plugin.version>
+
+        <!-- Les tests a grosse volumetrie sont exclus du build par defaut.
+             Le profil `slow` les reactive : mvn clean verify -Pslow -->
+        <surefire.excludedGroups>slow</surefire.excludedGroups>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-platform</artifactId>
+                <version>${hibernate.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>jcache</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.ttddyy</groupId>
+                <artifactId>datasource-proxy</artifactId>
+                <version>${datasource-proxy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludedGroups>${surefire.excludedGroups}</excludedGroups>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>slow</id>
+            <properties>
+                <surefire.excludedGroups></surefire.excludedGroups>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
