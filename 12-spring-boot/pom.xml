@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.medialib</groupId>
+        <artifactId>medialib-hibernate</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>12-spring-boot</artifactId>
+    <name>12 - Ce que Spring ajoute et ce qu il cache</name>
+    <description>
+        Transactions declaratives, OSIV, Spring Data JPA, et la table de correspondance
+        avec les onze chapitres precedents.
+    </description>
+
+    <!--
+      MODULE AUTONOME. Il ne depend PAS de 00-support, et c'est un choix documente.
+
+      Le BOM spring-boot-dependencies:4.1.2 impose Testcontainers 2.0.5, qui a renomme ses
+      artefacts : org.testcontainers:testcontainers-postgresql existe en 2.x, tandis que
+      l'ancien org.testcontainers:postgresql s'arrete a 1.21.4. Les deux generations ne
+      peuvent donc pas cohabiter dans un meme module, et 00-support est bati sur la 1.x.
+
+      Consequence voulue : ce module porte son propre harnais de test, minimal, bati sur
+      @ServiceConnection de Spring Boot. Cela sert le propos du chapitre — on voit exactement
+      ce que Boot apporte en matiere d'outillage.
+
+      Les versions du BOM Boot FONT FOI ici (Hibernate 7.4.13 au lieu de 7.4.16, Flyway 12,
+      Logback 1.5...). On ne les ecrase pas : ecraser Flyway d'une version majeure ou Logback
+      sous l'auto-configuration est une source connue de casse, et ce chapitre doit montrer
+      Spring Boot tel qu'on le rencontre.
+    -->
+    <properties>
+        <!--
+          Le pom parent gere explicitement logback-classic (1.6.7) pour les onze autres
+          chapitres. Cette entree heritee prend le pas sur le BOM Boot importe ci-dessous, et
+          se retrouvait melangee au logback-core 1.5.x de Boot — d'ou un AbstractMethodError
+          au demarrage du contexte Spring.
+          On realigne donc la propriete sur la version de Boot : ici, c'est Boot qui fait foi.
+        -->
+        <logback.version>1.5.38</logback.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--
+          Spring Boot 4 a eclate ses tranches de test par module : spring-boot-starter-test
+          ne fournit plus @DataJpaTest ni @AutoConfigureMockMvc. Il faut les starters dedies.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
