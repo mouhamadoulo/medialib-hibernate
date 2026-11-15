@@ -177,16 +177,20 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | Envers : révisions | `EnversTest` |
-| [ ] | Envers : `AuditReader` | `EnversTest` |
-| [ ] | Envers : `RevisionEntity` personnalisée | `EnversTest` |
-| [ ] | Soft delete (`@SQLDelete`) | `SoftDeleteTest` |
-| [ ] | `@SQLRestriction` | `SoftDeleteTest` |
-| [ ] | `@Filter` paramétré | `FilterTest` |
-| [ ] | Listener `PreInsert` | `InterceptorTest` |
-| [ ] | `@NaturalId` et son cache | `NaturalIdTest` |
-| [ ] | `@DynamicUpdate` | `DynamicUpdateTest` |
-| [ ] | **Multi-tenancy par schéma** | `MultiTenancyTest` |
+| [x] | Envers : révisions | `EnversTest` |
+| [x] | Envers : `AuditReader` | `EnversTest` |
+| [x] | Envers : `RevisionEntity` personnalisée | `EnversTest` |
+| [x] | Soft delete (`@SQLDelete`) | `SoftDeleteEtFiltresTest` |
+| [x] | `@SQLRestriction` | `SoftDeleteEtFiltresTest` |
+| [x] | `@Filter` paramétré | `SoftDeleteEtFiltresTest` |
+| [x] | Listener `PreInsert` | `ListenerEtOptimisationsTest` |
+| [x] | `@NaturalId` et son cache | `ListenerEtOptimisationsTest` |
+| [x] | `@DynamicUpdate` | `ListenerEtOptimisationsTest` |
+| [x] | **Multi-tenancy par schéma** | `MultiTenancyTest` |
+| [x] | `RevisionEntity` ecrite entierement (`DefaultRevisionEntity` est `final`) | `EnversTest` |
+| [x] | Seules les entites `@Audited` ont une table `_aud` | `EnversTest` |
+| [x] | Le `@Filter` est porte par la session | `SoftDeleteEtFiltresTest` |
+| [x] | Le meme identifiant coexiste dans deux agences | `MultiTenancyTest` |
 
 ## 11-performance — Performance
 

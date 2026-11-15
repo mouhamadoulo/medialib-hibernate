@@ -52,6 +52,17 @@ public abstract class HibernateTestBase {
         return Map.of();
     }
 
+    /**
+     * Point d'accroche execute juste apres la construction de la {@link SessionFactory}.
+     *
+     * <p>Certains mecanismes ne se declarent pas par un reglage : les listeners d'evenements,
+     * par exemple, s'enregistrent sur la fabrique une fois celle-ci batie. Ne fait rien par
+     * defaut.
+     */
+    protected void apresDemarrage(SessionFactory sessionFactory) {
+        // rien par defaut
+    }
+
     protected SessionFactory sessionFactory() {
         demarreSiNecessaire();
         return sessionFactory;
@@ -115,6 +126,7 @@ public abstract class HibernateTestBase {
         Metadata metadata = sources.buildMetadata();
 
         sessionFactory = metadata.buildSessionFactory();
+        apresDemarrage(sessionFactory);
         tables = tablesReellementCreees(releveDesTables(metadata));
     }
 
