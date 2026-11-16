@@ -11,6 +11,12 @@ import org.hibernate.resource.jdbc.spi.StatementInspector;
  * <p>Ce module n'utilise pas {@code 00-support} (voir le pom), il porte donc sa propre copie.
  * Le principe est identique : un {@code StatementInspector} d'Hibernate, branche ici par
  * {@link ConfigurationHibernate} au lieu d'un reglage passe a la main.
+ *
+ * <p>Une copie non testee est une copie qui divergera : {@code CompteurSqlTest} porte donc les
+ * memes verifications que son jumeau. Elle a d'ailleurs deja servi — cette classe contenait
+ * {@code replaceAll("\s+", " ")} ecrit avec un seul antislash, ce qui en Java n'est pas la
+ * regex {@code \s+} mais l'echappement d'espace (JLS 3.10.7), donc la chaine {@code " +"}.
+ * Le compteur ne repliait alors que les suites d'espaces, jamais les sauts de ligne.
  */
 public class CompteurSql implements StatementInspector {
 
@@ -55,10 +61,11 @@ public class CompteurSql implements StatementInspector {
     private static boolean estDuDdl(String sql) {
         String n = normalise(sql);
         return n.startsWith("create") || n.startsWith("drop") || n.startsWith("alter")
-                || n.startsWith("truncate") || n.startsWith("set ");
+                || n.startsWith("truncate") || n.startsWith("comment")
+                || n.startsWith("set ") || n.startsWith("call current_schema");
     }
 
     private static String normalise(String sql) {
-        return sql.strip().replaceAll("\s+", " ").toLowerCase(Locale.ROOT);
+        return sql.strip().replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
     }
 }
