@@ -3,7 +3,14 @@ package com.medialib.inheritance.single;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
-/** Un livre. Son nombre de pages ne peut pas etre NOT NULL : un DVD n'en a pas. */
+/**
+ * Un livre.
+ *
+ * <p>{@code pageCount} reste volontairement nullable : il doit cohabiter dans la meme table
+ * que les DVD et les vinyles, qui n'ont pas de pages. Ce qui se passe quand on tente malgre
+ * tout d'exiger {@code nullable = false} est demontre a part, sur une hierarchie dediee —
+ * voir {@code strict.StrictBook} et {@code NotNullEnSingleTableTest}.
+ */
 @Entity
 @DiscriminatorValue("BOOK")
 public class SingleBook extends SingleMedia {
