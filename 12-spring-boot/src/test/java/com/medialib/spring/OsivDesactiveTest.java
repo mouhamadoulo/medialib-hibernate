@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * OSIV <strong>desactive</strong> — ce qu'il faut mettre en production.
@@ -30,21 +29,15 @@ import org.springframework.transaction.support.TransactionTemplate;
 @AutoConfigureMockMvc
 @Import(ConteneurPostgres.class)
 @TestPropertySource(properties = "spring.jpa.open-in-view=false")
-class OsivDesactiveTest {
+class OsivDesactiveTest extends SpringTestBase {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private MediaRepository repository;
-
-    @Autowired
-    private TransactionTemplate transactionTemplate;
-
     @BeforeEach
     void unCatalogue() {
+        videLaBase();
         transactionTemplate.executeWithoutResult(status -> {
-            repository.deleteAllInBatch();
             Media media = new Media("Une si longue lettre", 1979);
             media.addCopy(new Copy("EX-0001"));
             media.addCopy(new Copy("EX-0002"));

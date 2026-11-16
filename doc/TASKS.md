@@ -220,42 +220,39 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 | | Notion | Test |
 |---|---|---|
-| [ ] | `@Transactional(readOnly)` | `TransactionalTest` |
-| [ ] | Auto-invocation et proxy (piège) | `TransactionalTest` |
-| [ ] | `REQUIRES_NEW` | `TransactionalTest` |
-| [ ] | **OSIV actif** | `OsivTest` |
-| [ ] | **OSIV désactivé** | `OsivTest` |
-| [ ] | Requête dérivée Spring Data | `SpringDataTest` |
-| [ ] | `Specification` | `SpringDataTest` |
-| [ ] | Projection par interface | `SpringDataTest` |
-| [ ] | `@DataJpaTest` et rollback automatique (piège) | `DataJpaTestPiegeTest` |
-| [ ] | `EntityManager` sous les repositories | `EntityManagerAccessibleTest` |
-| [ ] | Table de correspondance des 11 chapitres | `README.md` |
+| [x] | `@Transactional(readOnly)` | `TransactionalTest` |
+| [x] | Auto-invocation et proxy (piège) | `TransactionalTest` |
+| [x] | `REQUIRES_NEW` | `TransactionalTest` |
+| [x] | **OSIV actif** | `OsivTest` |
+| [x] | **OSIV désactivé** | `OsivTest` |
+| [x] | Requête dérivée Spring Data | `SpringDataTest` |
+| [x] | `Specification` | `SpringDataTest` |
+| [x] | Projection par interface | `SpringDataTest` |
+| [x] | `@DataJpaTest` et rollback automatique (piège) | `DataJpaTestPiegeTest` |
+| [x] | `EntityManager` sous les repositories | `EntityManagerAccessibleTest` |
+| [x] | Table de correspondance des 11 chapitres | `README.md` |
+
+---
+| [x] | Une requete native force un auto-flush de la session | `DataJpaTestPiegeTest` |
+| [x] | Spring Boot 4 a repackage ses classes d'auto-configuration | `ConfigurationHibernate` |
 
 ---
 
 ## Vérification finale
 
-- [ ] `mvn clean verify` passe
-- [ ] `mvn clean verify -Pslow` passe
-- [ ] Chaque module a au moins un test assertant le SQL émis
-- [ ] Aucune assertion ne porte sur un temps d'exécution
-- [ ] `git log --format='%an <%ae>' | sort -u` rend exactement une ligne
+- [x] `mvn clean verify` passe — 13 modules, **194 tests**, 5 min 33
+- [x] `mvn clean verify -Pslow` passe — **197 tests**, 5 min 43
+- [x] Chaque module a au moins un test assertant le SQL émis
+- [x] Aucune assertion ne porte sur un temps d'exécution
+- [x] `git log --format='%an <%ae>' | sort -u` rend exactement une ligne
 
----
+### Mesures relevées (indicatives, jamais assertées)
 
-## Etat au dernier commit
+| Opération | Débit |
+|---|---|
+| 100 000 insertions, `Session` + batch 500 + flush/clear | 6 159 ms (~16 000 lignes/s) |
+| 10 000 insertions, `StatelessSession.insert()` un par un | 14 820 ms (~675 lignes/s) |
+| 10 000 lectures, `StatelessSession` en streaming | 279 ms |
 
-**Modules 00 a 11 : complets et verts — 161 tests**, dont 17 sous `-Pslow`.
-
-**Module 12 (Spring Boot) : en cours.** Il compile, et `SpringDataTest` passe (6/6) :
-requete derivee, `@Query`, `Specification`, projection par interface, `@EntityGraph`, et
-`EntityManager` accessible sous les repositories. Restent rouges 10 tests sur 17 :
-
-- `OsivActifTest` et `OsivDesactiveTest` (4 erreurs) — il faut un `mvn clean` pour que le
-  flag `-parameters` du compilateur s'applique aux sources principales ;
-- `TransactionalTest` (5 erreurs) — a diagnostiquer ;
-- `DataJpaTestPiegeTest.le_rollback_automatique_masque_les_erreurs_de_flush` (1 echec).
-
-Reste aussi a ecrire la **table de correspondance** des onze chapitres dans le `README.md`,
-puis a passer la verification finale (`mvn clean verify` et `mvn clean verify -Pslow`).
+L'écart de plus d'un ordre de grandeur entre les deux premières lignes est la leçon du
+chapitre 11 : `StatelessSession` sert à **lire** de gros volumes, pas à en **écrire**.

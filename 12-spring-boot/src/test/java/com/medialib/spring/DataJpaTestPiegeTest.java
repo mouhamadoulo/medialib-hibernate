@@ -3,6 +3,7 @@ package com.medialib.spring;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.FlushModeType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,25 +38,44 @@ class DataJpaTestPiegeTest {
     private EntityManager entityManager;
 
     @Test
-    @DisplayName("save() n'ecrit rien : il attend un flush qui ne viendra jamais")
+    @DisplayName("save() n'ecrit rien tout de suite : il attend un flush")
     void le_rollback_automatique_masque_les_erreurs_de_flush() {
         Media media = repository.save(new Media("Une si longue lettre", 1979));
 
-        // L'identifiant est connu (la sequence a ete interrogee), mais rien n'est en base.
+        // L'identifiant est connu (la sequence a ete interrogee), mais rien n'est encore ecrit.
         assertThat(media.getId()).isNotNull();
 
-        Number enBase = (Number) entityManager
-                .createNativeQuery("select count(*) from media")
-                .getSingleResult();
-        assertThat(enBase.longValue()).isZero();
+        // Pour l'observer, il faut empecher l'auto-flush — voir le test suivant.
+        entityManager.setFlushMode(FlushModeType.COMMIT);
+        assertThat(nombreDeMedias()).isZero();
 
-        // Il faut le demander explicitement pour voir ce qu'une vraie application verrait.
+        // Et une fois le flush demande, la ligne est la... dans CETTE transaction seulement.
+        entityManager.setFlushMode(FlushModeType.AUTO);
         entityManager.flush();
+        assertThat(nombreDeMedias()).isEqualTo(1L);
 
-        Number apresFlush = (Number) entityManager
+        // A la fin du test, @DataJpaTest annule tout. Aucune contrainte differee, aucun
+        // declencheur, aucun comportement de commit ne sera jamais exerce par ce test.
+    }
+
+    @Test
+    @DisplayName("Une requete native declenche un auto-flush de TOUTE la session")
+    void une_requete_native_force_un_auto_flush() {
+        repository.save(new Media("L'Aventure ambigue", 1961));
+
+        // On n'a pas appele flush(). Et pourtant la requete native voit deja la ligne :
+        // faute de savoir quelles tables une requete native touche, Hibernate vide par
+        // prudence tout ce qui est en attente avant de l'executer.
+        //
+        // Meme logique qu'au chapitre 09, ou une ecriture native invalidait toutes les
+        // regions du cache L2. Le prix de l'ignorance est toujours le pessimisme.
+        assertThat(nombreDeMedias()).isEqualTo(1L);
+    }
+
+    private long nombreDeMedias() {
+        return ((Number) entityManager
                 .createNativeQuery("select count(*) from media")
-                .getSingleResult();
-        assertThat(apresFlush.longValue()).isEqualTo(1L);
+                .getSingleResult()).longValue();
     }
 
     @Test

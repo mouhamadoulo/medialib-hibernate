@@ -5,8 +5,8 @@ Apprendre Hibernate par un domaine métier réel : un réseau de médiathèques 
 Chaque notion d'Hibernate y naît d'un besoin métier, pas d'un exemple artificiel. Et chaque
 notion est prouvée par un test qui assertionne le **SQL réellement émis**.
 
-> 🚧 **Projet en construction.** L'avancement chapitre par chapitre est suivi dans
-> [`doc/TASKS.md`](doc/TASKS.md).
+**194 tests, 13 modules, tous verts.** 197 avec les tests à grosse volumétrie (`-Pslow`).
+Chaque notion est cochée dans [`doc/TASKS.md`](doc/TASKS.md).
 
 ---
 
@@ -162,6 +162,41 @@ la forme des requêtes SQL — grandeur déterministe — et se contentent de jo
 durées. Une assertion temporelle serait instable chez quiconque clone le dépôt, et les
 chiffres relevés sur une machine Windows/aarch64 avec Docker sous WSL2 ne se reproduisent
 nulle part ailleurs.
+
+
+---
+
+## Table de correspondance : Hibernate nu ↔ Spring Boot
+
+Le module 12 n'est pas une redite. Il répond à une seule question, chapitre par chapitre :
+**qu'est-ce que Spring ajoute, et qu'est-ce qu'il cache ?**
+
+| # | Chapitre | L'équivalent Spring | Ce qui se passe réellement derrière |
+|---|---|---|---|
+| 01 | `SessionFactory` bâtie à la main | `spring.datasource.*` + auto-configuration | Boot construit la même `SessionFactory`. Un réglage Hibernate se passe par `HibernatePropertiesCustomizer`, et non plus dans un `Map` |
+| 01 | `session.beginTransaction()` / `commit()` | `@Transactional` | Un **proxy**. Tout appel qui ne le traverse pas — l'auto-invocation — n'est pas transactionnel |
+| 01 | `FlushMode` explicite | `@Transactional(readOnly = true)` | Hibernate passe en `FlushMode.MANUAL` et saute le dirty checking. Une modification est **silencieusement perdue** |
+| 02 | Nommage par défaut d'Hibernate | `CamelCaseToUnderscoresNamingStrategy` | Boot l'installe par défaut. C'est lui, pas Hibernate, qui produit le `snake_case` |
+| 02 | `hbm2ddl.auto` passé à la main | `spring.jpa.hibernate.ddl-auto` | Même réglage, même danger. `update` reste à proscrire |
+| 03 | Mapping des associations | **identique** | Spring ne touche pas au mapping : c'est Hibernate qui travaille |
+| 04 | Mapping des collections | **identique** | Idem. `MultipleBagFetchException` se lève exactement pareil |
+| 05 | Stratégies d'héritage | **identique** | Idem |
+| 06 | `session.createQuery("...")` | Requête dérivée, `@Query`, `Specification` | Spring Data **écrit le HQL** à notre place. Le SQL émis est le même — ce module l'assertionne |
+| 06 | Projection par record | Projection par interface | Même `select` réduit, autre syntaxe |
+| 06 | Métamodèle statique + Criteria | `Specification` | L'API Criteria, emballée. Utile pour les critères optionnels |
+| 07 | `join fetch` / `@EntityGraph` | `@EntityGraph` sur le repository | Même graphe, déclaré sur la méthode |
+| 07 | `LazyInitializationException` | **OSIV, activé par défaut** | Un filtre tient la session ouverte jusqu'à la fin du rendu HTTP. L'exception disparaît — et une connexion est retenue pendant tout le rendu, avec des requêtes émises depuis la couche de présentation |
+| 08 | `@Version`, verrous pessimistes | **identique** (`@Lock` sur le repository) | Hibernate fait le travail. `@Lock` ne fait que passer le `LockModeType` |
+| 08 | Démarcation manuelle | `Propagation.REQUIRES_NEW` | Une transaction indépendante, qui survit au rollback de l'appelante |
+| 09 | Cache L2 configuré à la main | `spring.jpa.properties.hibernate.cache.*` | Mêmes propriétés, autre fichier |
+| 10 | Envers, `@Filter`, multi-tenancy | **identique** | Spring Data n'y change rien. Le multi-tenancy se branche par les mêmes services |
+| 11 | `hibernate.jdbc.batch_size` | `spring.jpa.properties.hibernate.jdbc.batch_size` | Même réglage. **Boot ne l'active pas par défaut** |
+| — | `HibernateTestBase` maison | `@DataJpaTest`, `@ServiceConnection` | Boot démarre le conteneur et câble la `DataSource` seul. Mais `@DataJpaTest` rend le test transactionnel et l'annule : aucun commit n'est jamais exercé, et aucune `LazyInitializationException` n'est détectable |
+
+**Ce qu'il faut en retenir** : sur les onze chapitres, sept sont rigoureusement identiques —
+c'est Hibernate qui fait le travail. Spring apporte la suppression de la plomberie et les
+transactions déclaratives. Il cache le cycle de la session, le moment du flush, et introduit
+un piège qui n'existe pas sans lui : l'OSIV.
 
 ---
 
