@@ -89,7 +89,10 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | | Notion | Test |
 |---|---|---|
 | [x] | `SINGLE_TABLE` et discriminant | `StrategiesTest` |
-| [x] | `SINGLE_TABLE` : colonnes forcément nullables | `StrategiesTest` |
+| [x] | `SINGLE_TABLE` : colonnes de sous-classe forcément nullables | `StrategiesTest` |
+| [x] | Exiger `nullable = false` quand même : Hibernate crée la contrainte | `NotNullEnSingleTableTest` |
+| [x] | Et c'est une **autre** sous-classe qui devient insérable impossible | `NotNullEnSingleTableTest` |
+| [x] | `@Column(nullable = false)` : Hibernate refuse dès le flush, avant la base | `StrategiesTest` |
 | [x] | `JOINED` | `StrategiesTest` |
 | [x] | `TABLE_PER_CLASS` et `union all` | `ComparatifTest` |
 | [x] | Comparatif des trois stratégies | `ComparatifTest` |
@@ -223,25 +226,24 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | `@Transactional(readOnly)` | `TransactionalTest` |
 | [x] | Auto-invocation et proxy (piège) | `TransactionalTest` |
 | [x] | `REQUIRES_NEW` | `TransactionalTest` |
-| [x] | **OSIV actif** | `OsivTest` |
-| [x] | **OSIV désactivé** | `OsivTest` |
+| [x] | **OSIV actif** | `OsivActifTest` |
+| [x] | **OSIV désactivé** | `OsivDesactiveTest` |
 | [x] | Requête dérivée Spring Data | `SpringDataTest` |
 | [x] | `Specification` | `SpringDataTest` |
 | [x] | Projection par interface | `SpringDataTest` |
 | [x] | `@DataJpaTest` et rollback automatique (piège) | `DataJpaTestPiegeTest` |
-| [x] | `EntityManager` sous les repositories | `EntityManagerAccessibleTest` |
-| [x] | Table de correspondance des 11 chapitres | `README.md` |
-
----
+| [x] | `EntityManager` sous les repositories, même `SessionFactory` | `SpringDataTest` |
 | [x] | Une requete native force un auto-flush de la session | `DataJpaTestPiegeTest` |
 | [x] | Spring Boot 4 a repackage ses classes d'auto-configuration | `ConfigurationHibernate` |
+| [x] | Le compteur SQL dupliqué ici est testé, pour qu'il ne dérive pas | `CompteurSqlTest` |
+| [x] | Table de correspondance des 11 chapitres | `README.md` |
 
 ---
 
 ## Vérification finale
 
-- [x] `mvn clean verify` passe — 13 modules, **194 tests**, 5 min 33
-- [x] `mvn clean verify -Pslow` passe — **197 tests**, 5 min 43
+- [x] `mvn clean verify` passe — 13 modules, **203 tests**
+- [x] `mvn clean verify -Pslow` passe — **206 tests** (les 3 tests à grosse volumétrie)
 - [x] Chaque module a au moins un test assertant le SQL émis
 - [x] Aucune assertion ne porte sur un temps d'exécution
 - [x] `git log --format='%an <%ae>' | sort -u` rend exactement une ligne

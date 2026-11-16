@@ -5,7 +5,7 @@ Apprendre Hibernate par un domaine métier réel : un réseau de médiathèques 
 Chaque notion d'Hibernate y naît d'un besoin métier, pas d'un exemple artificiel. Et chaque
 notion est prouvée par un test qui assertionne le **SQL réellement émis**.
 
-**194 tests, 13 modules, tous verts.** 197 avec les tests à grosse volumétrie (`-Pslow`).
+**203 tests, 13 modules, tous verts.** 206 avec les tests à grosse volumétrie (`-Pslow`).
 Chaque notion est cochée dans [`doc/TASKS.md`](doc/TASKS.md).
 
 ---
