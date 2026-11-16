@@ -89,7 +89,7 @@ test-hibernate/                                  ← racine du dépôt
   avec `<excludedGroups>slow</excludedGroups>` ; profil `slow` qui vide `excludedGroups`.
   Tous les modules en héritent.
 
-- [ ] **Étape 1 : Écrire `pom.xml` parent**
+- [x] **Étape 1 : Écrire `pom.xml` parent**
 
 `groupId` `com.medialib`, `artifactId` `medialib-hibernate`, `packaging` `pom`,
 `version` `1.0.0-SNAPSHOT`. Propriétés : `maven.compiler.release=21`,
@@ -98,21 +98,21 @@ propriété par version du §7 de la spec. `<modules>` listant les treize module
 `dependencyManagement` important les trois BOM ci-dessus. `maven-surefire-plugin`
 configuré avec `excludedGroups=slow`. Profil `slow` surchargeant `excludedGroups` à vide.
 
-- [ ] **Étape 2 : Écrire `.gitignore`**
+- [x] **Étape 2 : Écrire `.gitignore`**
 
 `target/`, `.idea/`, `*.iml`, `.vscode/`, `*.log`, `.DS_Store`.
 
-- [ ] **Étape 3 : Vérifier que le parent résout**
+- [x] **Étape 3 : Vérifier que le parent résout**
 
 Run: `mvn -N validate`
 Expected: `BUILD SUCCESS`. (`-N` : les modules n'existent pas encore.)
 
-- [ ] **Étape 4 : Vérifier l'encodage UTF-8** *(Review Focus 2)*
+- [x] **Étape 4 : Vérifier l'encodage UTF-8** *(Review Focus 2)*
 
 Run: `mvn -N help:evaluate -Dexpression=project.build.sourceEncoding -q -DforceStdout`
 Expected: affiche `UTF-8`.
 
-- [ ] **Étape 5 : Initialiser le dépôt et créer le distant**
+- [x] **Étape 5 : Initialiser le dépôt et créer le distant**
 
 ```bash
 git init -b main
@@ -126,7 +126,7 @@ gh repo create medialib-hibernate --public --source=. --remote=origin --push
 La description du dépôt est définie séparément, sans mention d'outil :
 `gh repo edit --description "Projet fil rouge Hibernate : apprendre Hibernate par un domaine metier reel, chaque notion prouvee par un test qui assertionne le SQL emis."`
 
-- [ ] **Étape 6 : Vérifier l'auteur du commit** *(contrainte globale)*
+- [x] **Étape 6 : Vérifier l'auteur du commit** *(contrainte globale)*
 
 Run: `git log -1 --format='%an <%ae>%n%b'`
 Expected: `Mouhamadou Moustapha LO <mouhamadoulo39@gmail.com>`, et **corps vide** — aucun
@@ -164,7 +164,7 @@ trailer `Co-Authored-By`.
     `hbm2ddl.auto=create-drop`.
   - `Slow` — `public static final String SLOW = "slow"`, pour `@Tag(Slow.SLOW)`.
 
-- [ ] **Étape 1 : Écrire les tests défaillants**
+- [x] **Étape 1 : Écrire les tests défaillants**
 
 ```java
 class SqlStatementCounterTest {
@@ -227,12 +227,12 @@ class SqlStatementCounterTest {
 }
 ```
 
-- [ ] **Étape 2 : Lancer les tests et vérifier qu'ils échouent**
+- [x] **Étape 2 : Lancer les tests et vérifier qu'ils échouent**
 
 Run: `mvn -pl 00-support test`
 Expected: FAIL — `SqlStatementCounter` n'existe pas.
 
-- [ ] **Étape 3 : Implémenter les quatre classes**
+- [x] **Étape 3 : Implémenter les quatre classes**
 
 Signatures ci-dessus (bloc Interfaces). Pour `SqlStatementCounter`, la classification se
 fait sur le premier mot de l'instruction normalisée (`strip`, `toLowerCase`) ; le DDL est
@@ -243,12 +243,12 @@ Pour `MediaLibPostgres`, échouer tôt et clairement si le démon Docker est inj
 `IllegalStateException` dont le message dit de démarrer Docker Desktop et donne la commande
 de vérification `docker info`.
 
-- [ ] **Étape 4 : Lancer les tests et vérifier qu'ils passent**
+- [x] **Étape 4 : Lancer les tests et vérifier qu'ils passent**
 
 Run: `mvn -pl 00-support test`
 Expected: PASS, 5 tests. Aucun conteneur démarré — ces tests sont purement unitaires.
 
-- [ ] **Étape 5 : Commit et push**
+- [x] **Étape 5 : Commit et push**
 
 ```bash
 git add 00-support
@@ -267,7 +267,7 @@ git push
 - Consumes: la liste des modules (Tâche 1), les commandes par chapitre.
 - Produces: `doc/TASKS.md` sert de contrat — chaque tâche suivante y coche ses notions.
 
-- [ ] **Étape 1 : Écrire `README.md`**
+- [x] **Étape 1 : Écrire `README.md`**
 
 Présentation de MediaLib et du principe « on assertionne le SQL, pas le résultat » avec
 l'exemple de code du §1 de la spec · prérequis : JDK 21, Maven 3.9+, **Docker Desktop
@@ -278,13 +278,13 @@ de domaine · section « mode reuse Testcontainers » en option · section « te
 `-Pslow` · index des notions renvoyant au module et à la classe de test · mention que le
 projet est en construction, renvoyant à `doc/TASKS.md`.
 
-- [ ] **Étape 2 : Écrire `doc/TASKS.md`**
+- [x] **Étape 2 : Écrire `doc/TASKS.md`**
 
 Une section par module, une case à cocher par notion structurante du §6 de la spec, avec
 une colonne pour la classe de test qui la couvre. Tout est décoché à ce stade sauf les
 tâches 1 à 3.
 
-- [ ] **Étape 3 : Écrire `CLAUDE.md`**
+- [x] **Étape 3 : Écrire `CLAUDE.md`**
 
 Conventions du dépôt : structure multi-modules · **règle de non-factorisation des entités
 entre modules, et pourquoi** · format des tests (assertion SQL obligatoire via
@@ -292,12 +292,12 @@ entre modules, et pourquoi** · format des tests (assertion SQL obligatoire via
 `slow` et profil Maven · **règle de commit : auteur unique Mouhamadou Moustapha LO, aucun
 trailer de co-auteur, aucune mention d'outil d'IA** · commandes utiles.
 
-- [ ] **Étape 4 : Vérifier les commandes annoncées** *(Review Focus 4)*
+- [x] **Étape 4 : Vérifier les commandes annoncées** *(Review Focus 4)*
 
 Run: `mvn -pl 00-support -am validate`
 Expected: `BUILD SUCCESS`, et le réacteur liste le parent **et** `00-support`.
 
-- [ ] **Étape 5 : Commit et push**
+- [x] **Étape 5 : Commit et push**
 
 ```bash
 git add README.md CLAUDE.md doc/TASKS.md
@@ -321,15 +321,15 @@ modules — chaque chapitre est hermétique.
 
 **Steps (identiques pour les douze) :**
 
-- [ ] **Étape 1** : écrire les entités du chapitre.
-- [ ] **Étape 2** : écrire les tests listés ci-dessous, chacun avec au moins une assertion
+- [x] **Étape 1** : écrire les entités du chapitre.
+- [x] **Étape 2** : écrire les tests listés ci-dessous, chacun avec au moins une assertion
   sur `sql()`.
-- [ ] **Étape 3** : `mvn -pl NN-<nom> -am test` → FAIL.
-- [ ] **Étape 4** : implémenter/corriger le mapping jusqu'au vert.
-- [ ] **Étape 5** : `mvn -pl NN-<nom> -am test` → PASS.
-- [ ] **Étape 6** : cocher les notions du module dans `doc/TASKS.md`, ajouter la ligne du
+- [x] **Étape 3** : `mvn -pl NN-<nom> -am test` → FAIL.
+- [x] **Étape 4** : implémenter/corriger le mapping jusqu'au vert.
+- [x] **Étape 5** : `mvn -pl NN-<nom> -am test` → PASS.
+- [x] **Étape 6** : cocher les notions du module dans `doc/TASKS.md`, ajouter la ligne du
   module au tableau du `README.md`.
-- [ ] **Étape 7** : commit `feat(NN-<nom>): <résumé>` puis `git push`.
+- [x] **Étape 7** : commit `feat(NN-<nom>): <résumé>` puis `git push`.
 
 ---
 
@@ -604,7 +604,7 @@ pour démontrer OSIV).
 | `DataJpaTestPiegeTest` | `le_rollback_automatique_masque_les_erreurs_de_flush` | documente le piège |
 | `EntityManagerAccessibleTest` | `l_entitymanager_reste_injectable_sous_les_repositories` | même `SessionFactory` |
 
-- [ ] **Étape finale de la tâche 15** : ajouter au `README.md` la **table de
+- [x] **Étape finale de la tâche 15** : ajouter au `README.md` la **table de
   correspondance** — une ligne par chapitre 01→11, donnant l'équivalent Spring et ce qui se
   passe derrière.
 
@@ -612,22 +612,22 @@ pour démontrer OSIV).
 
 ## Tâche 16 : Vérification finale
 
-- [ ] **Étape 1 : Build complet**
+- [x] **Étape 1 : Build complet**
 
 Run: `mvn clean verify`
 Expected: `BUILD SUCCESS`, 13 modules, en quelques minutes, tests `slow` exclus.
 
-- [ ] **Étape 2 : Build avec les tests lents**
+- [x] **Étape 2 : Build avec les tests lents**
 
 Run: `mvn clean verify -Pslow`
 Expected: `BUILD SUCCESS`, tests `@Tag("slow")` exécutés.
 
-- [ ] **Étape 3 : Vérifier le critère d'acceptation du §11**
+- [x] **Étape 3 : Vérifier le critère d'acceptation du §11**
 
 Chaque module a au moins un test assertant le SQL émis ; chaque notion du §6 est cochée
 dans `doc/TASKS.md` ; aucune assertion ne porte sur un temps.
 
-- [ ] **Étape 4 : Vérifier l'historique Git** *(contrainte globale)*
+- [x] **Étape 4 : Vérifier l'historique Git** *(contrainte globale)*
 
 Run: `git log --format='%an <%ae>' | sort -u`
 Expected: une seule ligne, `Mouhamadou Moustapha LO <mouhamadoulo39@gmail.com>`.
@@ -635,7 +635,7 @@ Expected: une seule ligne, `Mouhamadou Moustapha LO <mouhamadoulo39@gmail.com>`.
 Run: `git log --format='%B' | grep -ci "co-authored-by\|claude\|anthropic\|generated with"`
 Expected: `0`.
 
-- [ ] **Étape 5 : Commit final et push**
+- [x] **Étape 5 : Commit final et push**
 
 ```bash
 git add README.md doc/TASKS.md
