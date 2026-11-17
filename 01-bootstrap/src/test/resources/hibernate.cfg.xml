@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<!--
+  Bootstrap « natif XML » : la troisieme forme, la plus ancienne, et la seule ou la liste des
+  entites est declaree hors du code Java.
+
+  Lu par `new Configuration().configure()`, qui cherche `hibernate.cfg.xml` a la racine du
+  classpath. A comparer aux deux autres formes du meme chapitre :
+
+    - API programmatique : StandardServiceRegistryBuilder + MetadataSources.addAnnotatedClass()
+      — tout en Java, rien a decouvrir au demarrage ;
+    - API standard JPA : persistence.xml sous META-INF/, nom d'unite de persistance ;
+    - ici : hibernate.cfg.xml, API Hibernate native, balises <mapping class="..."/>.
+
+  Les proprietes de connexion sont volontairement absentes, pour la meme raison qu'en
+  persistence.xml : l'URL du conteneur PostgreSQL n'est connue qu'a l'execution. Elles sont
+  ajoutees au Configuration avant buildSessionFactory(). Ce partage est l'interet de la
+  forme : le XML porte ce qui est stable, le code porte ce qui depend de l'environnement.
+-->
+<hibernate-configuration>
+    <session-factory>
+
+        <property name="hibernate.hbm2ddl.auto">create-drop</property>
+        <property name="hibernate.show_sql">false</property>
+
+        <mapping class="com.medialib.bootstrap.Member"/>
+        <mapping class="com.medialib.bootstrap.Branch"/>
+
+    </session-factory>
+</hibernate-configuration>
