@@ -50,6 +50,97 @@ class IdentifiantsTest extends MappingTestBase {
     }
 
     @Test
+    @DisplayName("TABLE : l'allocation se fait hors de la session, le compteur ne la voit pas")
+    void table_alloue_dans_sa_propre_transaction() {
+        long avant = valeurDuCompteurDeReservations();
+
+        inTransaction(session -> {
+            sql().reset();
+
+            Reservation reservation = new Reservation("Une si longue lettre");
+            session.persist(reservation);
+
+            assertThat(reservation.getId()).isNotNull();
+
+            // Le fait marquant, et il est contre-intuitif : le compteur SQL de ce depot est un
+            // StatementInspector de session, et il ne voit RIEN. Le generateur TABLE n'alloue
+            // pas sur la connexion de la session — il en prend une a lui et valide son
+            // increment dans une transaction separee. Il faut qu'il en soit ainsi : si
+            // l'allocation etait annulee avec la transaction applicative, deux transactions
+            // concurrentes repartiraient avec le meme identifiant.
+            assertThat(sql().count()).isZero();
+
+            session.flush();
+
+            // L'INSERT, lui, repasse par la session, donc par le compteur. Comme SEQUENCE et
+            // contrairement a IDENTITY, il a pu attendre le flush.
+            assertThat(sql().insertCount()).isEqualTo(1);
+            assertThat(sql().lastQuery()).contains("insert into reservation");
+        });
+
+        // La preuve du mecanisme est dans la table d'appoint : son compteur a avance. C'est ce
+        // select-puis-update sur une ligne verrouillee qui rend ce generateur le plus lent des
+        // quatre — sous concurrence, toutes les insertions font la queue derriere ce verrou.
+        // Il n'existe que pour les bases depourvues de sequences.
+        assertThat(valeurDuCompteurDeReservations()).isGreaterThan(avant);
+    }
+
+    /** Le compteur que le generateur TABLE tient dans une table ordinaire. */
+    private long valeurDuCompteurDeReservations() {
+        return inTransactionReturning(session -> session.createNativeQuery(
+                "select next_val from id_generator where sequence_name = 'reservation'",
+                Long.class).getSingleResult());
+    }
+
+    @Test
+    @DisplayName("AUTO ne veut pas dire IDENTITY : sur PostgreSQL, Hibernate choisit une sequence")
+    void auto_se_resout_en_sequence_sur_postgresql() {
+        // Le malentendu courant : AUTO = « laisse la base faire », donc une colonne
+        // auto-incrementee. Sur PostgreSQL avec Hibernate 7, AUTO se resout en SEQUENCE — et
+        // la sequence porte un nom derive de l'entite.
+        String sequence = inTransactionReturning(session -> session.createNativeQuery(
+                "select sequence_name from information_schema.sequences "
+                        + "where sequence_schema = current_schema() "
+                        + "and sequence_name like 'author%'",
+                String.class).getSingleResult());
+        assertThat(sequence).isNotNull();
+
+        inTransaction(session -> {
+            sql().reset();
+
+            session.persist(new Author("Mariama Ba"));
+            session.persist(new Author("Cheikh Hamidou Kane"));
+            session.persist(new Author("Ousmane Sembene"));
+
+            // Deux appels a la sequence pour trois entites, et c'est bien une sequence
+            // PostgreSQL qui est interrogee, pas une colonne auto-incrementee.
+            assertThat(sql().allNormalized()).containsOnly("select nextval('author_seq')");
+            assertThat(sql().selectCount()).isEqualTo(2);
+
+            // Deux et non un : l'optimiseur « pooled » d'Hibernate appelle la sequence une
+            // premiere fois pour connaitre la borne basse, une seconde pour reserver la borne
+            // haute. Apres quoi il sert les identifiants de memoire.
+            assertThat(sql().insertCount()).isZero();
+
+            session.flush();
+            assertThat(sql().insertCount()).isEqualTo(3);
+
+            // La preuve que le bloc est bien reserve : vingt entites de plus, et la sequence
+            // n'est pas rappelee. L'allocationSize par defaut vaut 50.
+            sql().reset();
+            for (int i = 0; i < 20; i++) {
+                session.persist(new Author("Auteur " + i));
+            }
+
+            assertThat(sql().selectCount()).isZero();
+
+            // Si AUTO s'etait resolu en IDENTITY, ces vingt entites auraient deja provoque
+            // vingt INSERT immediats, et aucun regroupement n'aurait ete possible.
+            assertThat(sql().insertCount()).isZero();
+        });
+    }
+
+    @Test
     @DisplayName("UUID : l'identifiant existe avant tout dialogue avec la base")
     void uuid_genere_un_identifiant_cote_java() {
         inTransaction(session -> {

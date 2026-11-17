@@ -19,7 +19,9 @@ abstract class MappingTestBase extends HibernateTestBase {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[] {
-            Media.class, Member.class, Publisher.class, Fine.class, Loan.class, MoneyConverter.class
+            Media.class, Member.class, Publisher.class, Fine.class, Loan.class,
+            Reservation.class, Author.class, MediaSheet.class, Subscription.class,
+            MoneyConverter.class
         };
     }
 
