@@ -11,7 +11,9 @@ abstract class RequetesTestBase extends HibernateTestBase {
 
     @Override
     protected Class<?>[] entities() {
-        return new Class<?>[] {Media.class, Author.class, Member.class, Loan.class};
+        return new Class<?>[] {
+            Media.class, Author.class, Member.class, Loan.class, MediaLoanStats.class
+        };
     }
 
     @Override
