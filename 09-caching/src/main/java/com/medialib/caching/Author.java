@@ -36,4 +36,15 @@ public class Author {
     public String getName() {
         return name;
     }
+
+    /**
+     * Permet de comparer READ_WRITE a NONSTRICT_READ_WRITE sur une modification.
+     *
+     * <p>Voir {@code NonStrictEtCacheModeTest} : apres cette modification, le cache sert la
+     * nouvelle valeur sans retour en base — la ou {@link Publisher}, en
+     * {@code NONSTRICT_READ_WRITE}, aurait vu son entree evincee.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 }

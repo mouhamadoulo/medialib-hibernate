@@ -19,7 +19,9 @@ abstract class CacheTestBase extends HibernateTestBase {
 
     @Override
     protected Class<?>[] entities() {
-        return new Class<?>[] {Media.class, Author.class, Branch.class, Loan.class};
+        return new Class<?>[] {
+            Media.class, Author.class, Branch.class, Loan.class, Publisher.class
+        };
     }
 
     @Override
