@@ -24,6 +24,7 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 |---|---|---|
 | [x] | `SessionFactory` par `StandardServiceRegistryBuilder` | `BootstrapTest` |
 | [x] | Bootstrap par `persistence.xml` / `EntityManagerFactory` | `BootstrapTest` |
+| [x] | Bootstrap par `hibernate.cfg.xml` : les entités déclarées hors du code | `BootstrapTest` |
 | [x] | `Session` vs `EntityManager` | `BootstrapTest` |
 | [x] | État *transient* | `CycleDeVieTest` |
 | [x] | `persist` et différé jusqu'au flush | `CycleDeVieTest` |
@@ -42,6 +43,14 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | `IDENTITY` : INSERT immediat, aucun report possible | `IdentifiantsTest` |
 | [x] | `SEQUENCE` : INSERT differes au flush | `IdentifiantsTest` |
 | [x] | `UUID` | `IdentifiantsTest` |
+| [x] | `TABLE` : son allocation échappe au `StatementInspector` de session | `IdentifiantsTest` |
+| [x] | `AUTO` ne veut pas dire `IDENTITY` : sur PostgreSQL c'est une séquence | `IdentifiantsTest` |
+| [x] | L'optimiseur `pooled` appelle la séquence deux fois, pas une | `IdentifiantsTest` |
+| [x] | `@IdClass` : même schéma qu'`@EmbeddedId`, clé adressable en HQL | `CleCompositeIdClassTest` |
+| [x] | `@Lob` sur une `String` donne `oid`, pas `text` | `ColonnesEtContraintesTest` |
+| [x] | `@ColumnDefault` seul est écrasé par le NULL explicite d'Hibernate | `ColonnesEtContraintesTest` |
+| [x] | `@Check` n'existe qu'en base : aucune vérification côté Java | `ColonnesEtContraintesTest` |
+| [x] | `@Generated` revient par `insert ... returning`, sans aller-retour | `ColonnesEtContraintesTest` |
 | [x] | `@Embeddable` / `@Embedded` | `TypesValeurTest` |
 | [x] | `@EmbeddedId` (clé composite) | `TypesValeurTest` |
 | [x] | `AttributeConverter` (`Money`) | `TypesValeurTest` |
@@ -101,6 +110,8 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | `JOINED` autorise le NOT NULL que `SINGLE_TABLE` interdit | `StrategiesTest` |
 | [x] | `TABLE_PER_CLASS` ne cree aucune table pour la racine abstraite | `ComparatifTest` |
 | [x] | `@MappedSuperclass` recopie ses colonnes | `ComparatifTest` |
+| [x] | `@DiscriminatorFormula` : aucune colonne de type, le discriminant est calculé | `DiscriminantCalculeTest` |
+| [x] | Le type devient une **conséquence des données** : effacer l'ISBN reclasse la ligne | `DiscriminantCalculeTest` |
 
 ## 06-queries — Interroger
 
@@ -120,6 +131,8 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | Criteria compose des criteres optionnels | `CriteriaTest` |
 | [x] | Une projection n'est pas managee | `ProjectionsEtNativeTest` |
 | [x] | Pagination sans `order by` : resultat non deterministe | `PaginationEtInjectionTest` |
+| [x] | `@Subselect` : entité mappée sur une requête, aucune vue en base | `SubselectTest` |
+| [x] | `@Synchronize` : sans lui, l'agrégat lit à côté des écritures en attente | `SubselectTest` |
 
 ## 07-fetching — Le chargement
 
@@ -138,6 +151,8 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | **EAGER ne veut pas dire joint** : en HQL, requete separee | `LazyEagerTest` |
 | [x] | Une projection ne peut pas lever `LazyInitializationException` | `LazyEagerTest` |
 | [x] | Paginer les identifiants puis charger : la bonne solution | `PaginationFetchTest` |
+| [x] | `@Fetch(SUBSELECT)` : la requête d'origine rejouée en sous-requête | `FetchSubselectTest` |
+| [x] | Sa limite : aucun effet sur des entités chargées par `find` | `FetchSubselectTest` |
 
 ## 08-transactions-concurrency — Transactions et concurrence
 
@@ -156,6 +171,7 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | Le cache L1 masque la lecture non repetable | `IsolationTest` |
 | [x] | Aucune lecture sale possible | `IsolationTest` |
 | [x] | Variante pessimiste de l'emprunt concurrent | `EmpruntConcurrentTest` |
+| [x] | `PESSIMISTIC_FORCE_INCREMENT` : verrou de ligne **et** version incrémentée | `VersionTest` |
 
 ## 09-caching — Les caches
 
@@ -175,6 +191,10 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | L'INSERT peuple deja le cache L2 | `CacheNiveau2Test` |
 | [x] | Un UPDATE natif invalide TOUTES les regions | `StrategiesEtInvalidationTest` |
 | [x] | Une requete non cachee est rejouee | `CacheRequeteTest` |
+| [x] | `NONSTRICT_READ_WRITE` évince au lieu de mettre à jour | `NonStrictEtCacheModeTest` |
+| [x] | **`session.setCacheMode` est ignoré par `find()`** — il faut le passer en `FindOption` | `NonStrictEtCacheModeTest` |
+| [x] | Le même réglage gouverne bien les requêtes HQL : l'asymétrie n'est signalée nulle part | `NonStrictEtCacheModeTest` |
+| [x] | `CacheMode.GET` : lire le cache sans jamais l'alimenter | `NonStrictEtCacheModeTest` |
 
 ## 10-advanced — Fonctionnalités avancées
 
@@ -194,6 +214,13 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | Seules les entites `@Audited` ont une table `_aud` | `EnversTest` |
 | [x] | Le `@Filter` est porte par la session | `SoftDeleteEtFiltresTest` |
 | [x] | Le meme identifiant coexiste dans deux agences | `MultiTenancyTest` |
+| [x] | `@SQLInsert` / `@SQLUpdate` : notre énoncé remplace celui d'Hibernate | `SqlPersonnaliseEtImmutableTest` |
+| [x] | Leur piège : l'ordre des paramètres est celui d'Hibernate, pas des champs | `SqlPersonnaliseEtImmutableTest` |
+| [x] | `@Immutable` : la modification est perdue **en silence**, sans UPDATE ni erreur | `SqlPersonnaliseEtImmutableTest` |
+| [x] | `@DynamicInsert` : la colonne nulle quitte l'INSERT, le défaut s'applique enfin | `SqlPersonnaliseEtImmutableTest` |
+| [x] | Listener `PostLoad` : une fois par instance matérialisée, pas par accès | `PostLoadTest` |
+| [x] | Procédure stockée, par l'API et par `@NamedStoredProcedureQuery` | `ProcedureStockeeTest` |
+| [x] | Un `INOUT` doit être lié avant l'appel : PostgreSQL n'a pas d'`OUT` pur | `ProcedureStockeeTest` |
 
 ## 11-performance — Performance
 
@@ -218,6 +245,10 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 | [x] | Index cree par migration, absent du mapping | `FlywayTest` |
 | [x] | Rejouer Flyway est sans effet | `FlywayTest` |
 | [x] | `datasource-proxy` au lieu du `StatementInspector` : pourquoi | `CompteurDExecutions` |
+| [x] | `scroll()` : un curseur, une seule exécution JDBC pour 5 000 lignes | `ScrollEtPlanDExecutionTest` |
+| [x] | **Son piège** : il borne le réseau, pas le contexte — le `clear` est obligatoire | `ScrollEtPlanDExecutionTest` |
+| [x] | `explain analyze` : `hbm2ddl` ne crée aucun index de recherche | `ScrollEtPlanDExecutionTest` |
+| [x] | `Seq Scan` → `Index Scan` sans qu'un caractère du mapping change | `ScrollEtPlanDExecutionTest` |
 
 ## 12-spring-boot — Ce que Spring ajoute et cache
 
@@ -242,8 +273,9 @@ Référence : [document de conception §6](../docs/superpowers/specs/2026-11-15-
 
 ## Vérification finale
 
-- [x] `mvn clean verify` passe — 13 modules, **203 tests**
-- [x] `mvn clean verify -Pslow` passe — **206 tests** (les 3 tests à grosse volumétrie)
+- [x] `mvn clean verify` passe — 13 modules, **239 tests**
+- [x] `mvn clean verify -Pslow` passe — **242 tests** (les 3 tests à grosse volumétrie)
+- [x] Chaque notion structurante du §6 du document de conception est couverte par un test
 - [x] Chaque module a au moins un test assertant le SQL émis
 - [x] Aucune assertion ne porte sur un temps d'exécution
 - [x] `git log --format='%an <%ae>' | sort -u` rend exactement une ligne
