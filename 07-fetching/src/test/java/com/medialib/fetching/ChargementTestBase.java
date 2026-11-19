@@ -15,7 +15,8 @@ abstract class ChargementTestBase extends HibernateTestBase {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[] {
-            Media.class, Copy.class, Author.class, Branch.class, Member.class, Loan.class
+            Media.class, Copy.class, Author.class, Branch.class, Member.class, Loan.class,
+            Series.class, Episode.class
         };
     }
 
