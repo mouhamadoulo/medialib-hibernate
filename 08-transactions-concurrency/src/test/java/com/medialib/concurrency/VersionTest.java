@@ -82,6 +82,35 @@ class VersionTest extends ConcurrenceTestBase {
     }
 
     @Test
+    @DisplayName("PESSIMISTIC_FORCE_INCREMENT : il verrouille la ligne ET incremente tout de suite")
+    void pessimistic_force_increment_verrouille_et_incremente() {
+        Long id = unExemplaireDisponible("EX-0005");
+
+        inTransaction(session -> {
+            sql().reset();
+
+            session.find(Copy.class, id, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+
+            // Les deux moities du nom, dans le SQL. D'abord un verrou de ligne en base, comme
+            // PESSIMISTIC_WRITE : toute transaction concurrente qui voudrait cette ligne
+            // attend. Ensuite un UPDATE de la version, emis immediatement et non au commit.
+            assertThat(sql().allNormalized()).anyMatch(s -> s.contains("for no key update"));
+            assertThat(sql().updateCount()).isEqualTo(1);
+            assertThat(sql().allNormalized())
+                    .anyMatch(s -> s.startsWith("update copy") && s.contains("version"));
+        });
+
+        int version = inTransactionReturning(session -> session.find(Copy.class, id).getVersion());
+        assertThat(version).isEqualTo(1);
+
+        // La difference avec OPTIMISTIC_FORCE_INCREMENT, qui est juste au-dessus : celui-la
+        // n'emet aucun verrou et ne decale la detection qu'au commit, ou elle peut echouer.
+        // Celui-ci paie un verrou tout de suite pour ne pas avoir a echouer plus tard. On le
+        // choisit quand le conflit est probable et qu'un echec en fin de transaction couterait
+        // plus cher que l'attente.
+    }
+
+    @Test
     @DisplayName("Sans conflit, rien ne se passe : le verrouillage optimiste est gratuit")
     void sans_conflit_le_verrouillage_optimiste_ne_coute_rien() {
         Long id = unExemplaireDisponible("EX-0004");
