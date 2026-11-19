@@ -5,7 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedStoredProcedureQuery;
+import jakarta.persistence.ParameterMode;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.StoredProcedureParameter;
 import java.time.Instant;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NaturalId;
@@ -27,11 +30,27 @@ import org.hibernate.annotations.SQLRestriction;
  *   <li>Un champ d'audit rempli par un <strong>listener d'evenements</strong>, sans qu'aucun
  *       code appelant ne s'en occupe.</li>
  * </ul>
+ *
+ * <p>Elle porte aussi la declaration d'une <strong>procedure stockee</strong>. Comme pour
+ * {@code @NamedQuery} au chapitre 06, la forme declarative fait verifier la signature au
+ * demarrage plutot qu'au premier appel, et sort le nom de la procedure du code appelant.
+ *
+ * <p>La procedure elle-meme est creee par {@code ProcedureStockeeTest} : {@code hbm2ddl.auto}
+ * ne genere que les tables.
  */
 @Entity
 @DynamicUpdate
 @SQLDelete(sql = "update media set archived = true where id = ?")
 @SQLRestriction("archived = false")
+@NamedStoredProcedureQuery(
+        name = "Media.compteOeuvres",
+        procedureName = "compte_oeuvres",
+        parameters = {
+            @StoredProcedureParameter(name = "p_prefixe", type = String.class,
+                    mode = ParameterMode.IN),
+            @StoredProcedureParameter(name = "p_total", type = Integer.class,
+                    mode = ParameterMode.INOUT)
+        })
 public class Media {
 
     @Id

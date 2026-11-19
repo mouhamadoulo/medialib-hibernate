@@ -16,7 +16,8 @@ abstract class AvanceTestBase extends HibernateTestBase {
     @Override
     protected Class<?>[] entities() {
         return new Class<?>[] {
-            Media.class, Copy.class, Loan.class, Member.class, RevisionAvecAuteur.class
+            Media.class, Copy.class, Loan.class, Member.class, RevisionAvecAuteur.class,
+            Fine.class, ArchivedLoan.class, MemberProfile.class
         };
     }
 
